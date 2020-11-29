@@ -60,104 +60,106 @@ namespace UnityEngine.EventSystems
 
             // send update events if there is a selected object - this is important for InputField to receive keyboard events
             SendUpdateEventToSelectedObject();
-
-            foreach (ArbitraryInput pointer in ArbitraryInput.instances)
+            if (ArbitraryInput.instances != null)
             {
-                //Check if the Pointer is Active in the heirarchy. If it isn't, turn off the cursor and continue
-                if (pointer.gameObject.activeInHierarchy == false)
+                foreach (ArbitraryInput pointer in ArbitraryInput.instances)
                 {
-                    pointer.isHittingUI = false;
-
-                    continue;
-                }
-
-                UpdateCameraPosition(pointer);
-
-                bool hit = GetLookPointerEventData(pointer);
-                if (hit == false)
-                    continue;
-
-                pointer.CurrentPoint = pointer.PointEvent.pointerCurrentRaycast.gameObject;
-
-                // handle enter and exit events (highlight)
-                base.HandlePointerExitAndEnter(pointer.PointEvent, pointer.CurrentPoint);
-
-                UpdateCursor(pointer, pointer.PointEvent);
-
-                if (pointer != null)
-                {
-                    if (pointer.buttonDown)
+                    //Check if the Pointer is Active in the heirarchy. If it isn't, turn off the cursor and continue
+                    if (pointer.gameObject.activeInHierarchy == false)
                     {
-                        ClearSelection();
+                        pointer.isHittingUI = false;
 
-                        pointer.PointEvent.pressPosition = pointer.PointEvent.position;
-                        pointer.PointEvent.pointerPressRaycast = pointer.PointEvent.pointerCurrentRaycast;
-                        pointer.PointEvent.pointerPress = null;
-
-                        if (pointer.CurrentPoint != null)
-                        {
-                            pointer.CurrentPressed = pointer.CurrentPoint;
-
-                            GameObject newPressed = ExecuteEvents.ExecuteHierarchy(pointer.CurrentPressed.gameObject, pointer.PointEvent, ExecuteEvents.pointerDownHandler);
-
-                            if (newPressed == null)
-                            {
-                                // some UI elements might only have click handler and not pointer down handler
-                                newPressed = ExecuteEvents.ExecuteHierarchy(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.pointerClickHandler);
-                                if (newPressed != null)
-                                {
-                                    pointer.CurrentPressed = newPressed;
-                                }
-                            }
-                            else
-                            {
-                                pointer.CurrentPressed = newPressed;
-                                // we want to do click on button down at same time, unlike regular mouse processing
-                                // which does click when mouse goes up over same object it went down on
-                                // reason to do this is head tracking might be jittery and this makes it easier to click buttons
-                                ExecuteEvents.Execute(newPressed, pointer.PointEvent, ExecuteEvents.pointerClickHandler);
-                            }
-
-                            if (newPressed != null)
-                            {
-                                pointer.PointEvent.pointerPress = newPressed;
-                                pointer.CurrentPressed = newPressed;
-                                Select(pointer.CurrentPressed);
-                                //ButtonUsed = true;
-                            }
-
-                            ExecuteEvents.Execute(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.beginDragHandler);
-                            pointer.PointEvent.pointerDrag = pointer.CurrentPressed;
-                            pointer.CurrentDragging = pointer.CurrentPressed;
-                        }
+                        continue;
                     }
 
-                    if (pointer.buttonUp)
+                    UpdateCameraPosition(pointer);
+
+                    bool hit = GetLookPointerEventData(pointer);
+                    if (hit == false)
+                        continue;
+
+                    pointer.CurrentPoint = pointer.PointEvent.pointerCurrentRaycast.gameObject;
+
+                    // handle enter and exit events (highlight)
+                    base.HandlePointerExitAndEnter(pointer.PointEvent, pointer.CurrentPoint);
+
+                    UpdateCursor(pointer, pointer.PointEvent);
+
+                    if (pointer != null)
                     {
-                        if (pointer.CurrentDragging)
+                        if (pointer.buttonDown)
                         {
-                            ExecuteEvents.Execute(pointer.CurrentDragging, pointer.PointEvent, ExecuteEvents.endDragHandler);
+                            ClearSelection();
+
+                            pointer.PointEvent.pressPosition = pointer.PointEvent.position;
+                            pointer.PointEvent.pointerPressRaycast = pointer.PointEvent.pointerCurrentRaycast;
+                            pointer.PointEvent.pointerPress = null;
 
                             if (pointer.CurrentPoint != null)
                             {
-                                ExecuteEvents.ExecuteHierarchy(pointer.CurrentPoint, pointer.PointEvent, ExecuteEvents.dropHandler);
-                            }
-                            pointer.PointEvent.pointerDrag = null;
-                            pointer.CurrentDragging = null;
-                        }
-                        if (pointer.CurrentPressed)
-                        {
-                            ExecuteEvents.Execute(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.pointerUpHandler);
-                            pointer.PointEvent.rawPointerPress = null;
-                            pointer.PointEvent.pointerPress = null;
-                            pointer.CurrentPressed = null;
-                        }
-                    }
+                                pointer.CurrentPressed = pointer.CurrentPoint;
 
-                    // drag handling
-                    if (pointer.CurrentDragging != null)
-                    {
-                        ExecuteEvents.Execute(pointer.CurrentDragging, pointer.PointEvent, ExecuteEvents.dragHandler);
+                                GameObject newPressed = ExecuteEvents.ExecuteHierarchy(pointer.CurrentPressed.gameObject, pointer.PointEvent, ExecuteEvents.pointerDownHandler);
+
+                                if (newPressed == null)
+                                {
+                                    // some UI elements might only have click handler and not pointer down handler
+                                    newPressed = ExecuteEvents.ExecuteHierarchy(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.pointerClickHandler);
+                                    if (newPressed != null)
+                                    {
+                                        pointer.CurrentPressed = newPressed;
+                                    }
+                                }
+                                else
+                                {
+                                    pointer.CurrentPressed = newPressed;
+                                    // we want to do click on button down at same time, unlike regular mouse processing
+                                    // which does click when mouse goes up over same object it went down on
+                                    // reason to do this is head tracking might be jittery and this makes it easier to click buttons
+                                    ExecuteEvents.Execute(newPressed, pointer.PointEvent, ExecuteEvents.pointerClickHandler);
+                                }
+
+                                if (newPressed != null)
+                                {
+                                    pointer.PointEvent.pointerPress = newPressed;
+                                    pointer.CurrentPressed = newPressed;
+                                    Select(pointer.CurrentPressed);
+                                    //ButtonUsed = true;
+                                }
+
+                                ExecuteEvents.Execute(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.beginDragHandler);
+                                pointer.PointEvent.pointerDrag = pointer.CurrentPressed;
+                                pointer.CurrentDragging = pointer.CurrentPressed;
+                            }
+                        }
+
+                        if (pointer.buttonUp)
+                        {
+                            if (pointer.CurrentDragging)
+                            {
+                                ExecuteEvents.Execute(pointer.CurrentDragging, pointer.PointEvent, ExecuteEvents.endDragHandler);
+
+                                if (pointer.CurrentPoint != null)
+                                {
+                                    ExecuteEvents.ExecuteHierarchy(pointer.CurrentPoint, pointer.PointEvent, ExecuteEvents.dropHandler);
+                                }
+                                pointer.PointEvent.pointerDrag = null;
+                                pointer.CurrentDragging = null;
+                            }
+                            if (pointer.CurrentPressed)
+                            {
+                                ExecuteEvents.Execute(pointer.CurrentPressed, pointer.PointEvent, ExecuteEvents.pointerUpHandler);
+                                pointer.PointEvent.rawPointerPress = null;
+                                pointer.PointEvent.pointerPress = null;
+                                pointer.CurrentPressed = null;
+                            }
+                        }
+
+                        // drag handling
+                        if (pointer.CurrentDragging != null)
+                        {
+                            ExecuteEvents.Execute(pointer.CurrentDragging, pointer.PointEvent, ExecuteEvents.dragHandler);
+                        }
                     }
                 }
             }
