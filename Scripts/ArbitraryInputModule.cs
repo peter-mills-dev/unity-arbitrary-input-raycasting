@@ -40,6 +40,8 @@ namespace UnityEngine.EventSystems
             ControllerCamera.nearClipPlane = 0.001f;
             ControllerCamera.stereoTargetEye = StereoTargetEyeMask.None;
 
+            ControllerCamera.enabled = false;
+
             Canvas[] canvases = GameObject.FindObjectsOfType<Canvas>();
 
             foreach (Canvas canvas in canvases)
