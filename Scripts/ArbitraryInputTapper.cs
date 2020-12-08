@@ -47,7 +47,7 @@ public class ArbitraryInputTapper : ArbitraryInput
     protected override void Awake()
     {
         base.Awake();
-        transform.localPosition = new Vector3(-(pointToActivateAt + activationRange), 0, 0);
+        //transform.localPosition = new Vector3(-(pointToActivateAt + activationRange), 0, 0);
     }
 
     protected override void Start()
@@ -62,7 +62,7 @@ public class ArbitraryInputTapper : ArbitraryInput
 
     private void OnValidate()
     {
-        transform.localPosition = new Vector3(pointToActivateAt - activationRange, 0 , 0);
+        //transform.localPosition = new Vector3(pointToActivateAt - activationRange, 0 , 0);
     }
 
     protected override void Update()
