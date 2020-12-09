@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7927359786362471580}
   - component: {fileID: 3543327925517272270}
   - component: {fileID: 6971751964202153241}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,14 +52,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1348123618152021022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -84,7 +84,7 @@ GameObject:
   m_Component:
   - component: {fileID: 752056935441699033}
   - component: {fileID: 2074465445444847072}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Tap Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 8232374097841809852}
   - component: {fileID: 3456863555789489818}
   - component: {fileID: 4593732383628957710}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

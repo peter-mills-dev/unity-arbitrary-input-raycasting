@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ArbitraryInputTapper : ArbitraryInput
@@ -27,6 +28,9 @@ public class ArbitraryInputTapper : ArbitraryInput
 
     [SerializeField]
     private GameObject tapCursorPrefab;
+
+    [SerializeField] public UnityEvent OnTouch;
+    [SerializeField] public UnityEventFloat OnNearTouch;
 
     private TapCursorController tapCursorController;
 
@@ -55,8 +59,23 @@ public class ArbitraryInputTapper : ArbitraryInput
         base.Start();
     }
 
+    private void OnEnable()
+    {
+        if(Cursor != null)
+            Cursor.gameObject.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
+
+        if (Cursor != null)
+            Cursor.gameObject.SetActive(false);
+    }
+
     protected override void OnDestroy()
     {
+        OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
         base.OnDestroy();
     }
 
@@ -70,6 +89,8 @@ public class ArbitraryInputTapper : ArbitraryInput
         if (PointEvent != null)
         {
             distanceToTarget = PointEvent.pointerCurrentRaycast.distance;
+
+            OnNearTouch.Invoke(Mathf.InverseLerp(0, distanceForCursorActivation, distanceToTarget));
         }
 
         if(distanceToTarget <= pointToActivateAt + activationRange && distanceToTarget >= pointToActivateAt - activationRange)
@@ -77,13 +98,18 @@ public class ArbitraryInputTapper : ArbitraryInput
             if (!buttonPressed)
             {
                 Press();
+                OVRInput.SetControllerVibration(.3f, .3f, OVRInput.Controller.RTouch);
             }
+
+            OnTouch.Invoke();
         }
         else
         {
-            if(buttonPressed)
+
+            if (buttonPressed)
             {
                 Unpress();
+                OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
             }
         }
         
@@ -111,8 +137,6 @@ public class ArbitraryInputTapper : ArbitraryInput
         Gizmos.color = Color.black;
 
         Gizmos.DrawSphere(transform.position + transform.forward * distanceToTarget, 0.01f);
-
-
     }
 
     protected override void InitalizeCursor()
@@ -155,3 +179,6 @@ public class ArbitraryInputTapper : ArbitraryInput
         tapCursorController.UpdateCursor(Mathf.InverseLerp(distanceForCursorActivation, pointToActivateAt + activationRange, distanceToTarget));
     }
 }
+
+[Serializable]
+public class UnityEventFloat : UnityEvent<float> { }

@@ -11,7 +11,8 @@ public class TapCursorController : MonoBehaviour
 
     [Range(0,1)][SerializeField]
     private float closeness;
-
+    float minAlpha = 0;
+    float maxAlpha = 0.3f;
     public Vector3 minGradientSize, maxGradientSize;
 
     private void OnValidate()
@@ -25,6 +26,6 @@ public class TapCursorController : MonoBehaviour
 
         gradient.transform.localScale = Vector3.Lerp(minGradientSize, maxGradientSize, closeness);
 
-        gradient.color = new Color(gradient.color.r, gradient.color.g, gradient.color.b, closeness);
+        gradient.color = new Color(gradient.color.r, gradient.color.g, gradient.color.b, Mathf.Lerp(minAlpha, maxAlpha, closeness));
     }
 }
